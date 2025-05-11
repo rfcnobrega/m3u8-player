@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stream Player</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <style>
+    body { font-family: sans-serif; text-align: center; background: #111; color: white; margin: 0; padding: 20px; }
+    video { width: 90%; max-width: 1000px; height: auto; border: 2px solid #fff; margin-top: 20px; }
+    input, button { padding: 10px; font-size: 1rem; width: 80%; margin: 10px auto; display: block; }
+  </style>
+</head>
+<body>
+  <h2>📺 M3U8 Stream Player</h2>
+  <input id="streamUrl" placeholder="Paste your .m3u8 URL here" value="https://d277k9d1h9dro4.cloudfront.net/out/v1/293e7c3464824cbd8818ab8e49dc5fe9/index.m3u8" />
+  <button onclick="playStream()">▶ Play Stream</button>
+  <video id="video" controls autoplay></video>
+
+  <script>
+    function playStream() {
+      const video = document.getElementById('video');
+      const url = document.getElementById('streamUrl').value;
+
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(url);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = url;
+        video.addEventListener('loadedmetadata', () => video.play());
+      } else {
+        alert("HLS not supported in this browser.");
+      }
+    }
+  </script>
+</body>
+</html>
